@@ -21,8 +21,7 @@ There you will also find how to get the tools to test the i2c device once it is 
 ### Veryfing your hardware
 
 Considering you have enabled i2c5 in your STM32MP157-DK2, you will need to hook up your module as per image below:
-
-<img width="50%" height="50%" alt="stm32mp157-dk2-bme280 001" src="https://github.com/user-attachments/assets/2b9f14cc-e5e8-475a-ba3a-3b5d1c868c86" />
+<img width="1920" height="1080" alt="stm32mp157-dk2-bme280 001" src="https://github.com/user-attachments/assets/b04a4905-6af2-4af9-b3fb-f19f91afa852" />
 
 As you can see, I am using the Arduino connectors. Feel free to use the Raspeberry PI ones. But make sure you find the righ PIN for SDA and SCL. You would be able to find it in the STM documentation below:
 
