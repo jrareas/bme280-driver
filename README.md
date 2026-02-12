@@ -1,27 +1,48 @@
-# BME280 
+# BME280 Yocto Recipe
 
-A Linux device driver for the Bosch BME280 temperature, pressure, humidity sensor using the I2C protocol, written in C. 
+A Linux device driver for the Bosch BME280 temperature, pressure, humidity sensor using the I2C protocol, written in C and packed in a yocto recipe.
 
-<img src="https://user-images.githubusercontent.com/28817028/210186916-9eb196d5-eaf1-4856-9faa-2ae71ba2e0b0.png" width=50% height=50%>
+ This recipe base itself on a bme280 c driver found at https://github.com/leungjch/bme280-driver. Along with the recipe, there were also some bug fixes on the library to properly read the address 0xA1 from the sensor. 
+ 
+ Also some debug instructions were added for my own sake.
+ 
+ 
+I tested this recipe using yocto current version and the stm32mp157-dk2. I will push branchs accordingly in the future. Use the same branch as your poky branch. If there is a branch here that matches, that means I tested it.
 
 
-## Setup on Raspberry Pi
+## Setup on STM32MP157-DK2
+
+First you will need to enable i2c bus 1 in your stm32 yocto build. I will not go over that process as Shawn Hymel said it all on his digikey videos on the subject. I would recommend you to follow the whole series. But if you are not into that yet, just follow:
+
+https://www.youtube.com/watch?v=srM6u8e4tyw&list=PLEBQazB0HUyTpoJoZecRK6PpDG31Y7RPB&index=5
+
+There you will also find how to get the tools to test the i2c device once it is connected
+
+### Veryfing your hardware
+
+Considering you have enabled i2c5 in your STM32MP157-DK2, you will need to hook up your module as per image below:
+
+<img width="50%" height="50%" alt="stm32mp157-dk2-bme280 001" src="https://github.com/user-attachments/assets/2b9f14cc-e5e8-475a-ba3a-3b5d1c868c86" />
+
+As you can see, I am using the Arduino connectors. Feel free to use the Raspeberry PI ones. But make sure you find the righ PIN for SDA and SCL. You would be able to find it in the STM documentation below:
+
+https://www.st.com/resource/en/user_manual/um2637-discovery-kits-with-increasedfrequency-800-mhz-stm32mp157-mpus-stmicroelectronics.pdf
+
+This is how I have mine:
+
+<img width="50%" height="50%" alt="image2" src="https://github.com/user-attachments/assets/0a98df64-3a4a-4cf9-9192-061eb7888b9e" />
+
+<img width="578" height="580" alt="image1" src="https://github.com/user-attachments/assets/4a00c405-e5dc-47aa-b528-8207d71c8add" />
 
 
+Now lets run `i2cdetect` to verify that the module is available to interface:
 
-
-This driver was tested on a Raspberry Pi 4B. To run on Raspberry Pi OS:
-
-Run `raspi config` and enable I2C from `Interface Options -> I2C`.
-
-Hook up the BME280 sensor to the Raspberry Pi and run `i2cdetect` to verify
-that it is available to interface:
 ```
-sudo apt install i2c-tools # if not included
 i2cdetect -y 1
 ```
 
 The output of `i2cdetect` should be something like
+
 ```
      0  1  2  3  4  5  6  7  8  9  a  b  c  d  e  f
 00:                         -- -- -- -- -- -- -- -- 
@@ -33,9 +54,14 @@ The output of `i2cdetect` should be something like
 60: -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- 
 70: -- -- -- -- -- -- 76 --                         
 ```
-Which indicates that the sensor is available at 0x76.
+
+Which indicates that the sensor is available at 0x76. 
+
+Talking about Yocto now, from here, you should be able to build the recipe and the module will be shipped with your distribution. I should mention this recipe should be part of layer in your build and that layer should be added to your `local.conf` file. The ways to achieve that is beyond the scope here.
 
 ## Building and reading data
+
+You can also build the drive standalone if you have the proper SDKs installed in your system.
 
 Build the driver:
 ```
@@ -76,15 +102,4 @@ To interpret this line:
 - Humidity is in percentage and is obtained by dividng the value by 1024, e.g.
   `27597/1024=25.9%`
 
-## Running the example
-
-The userspace example is a simple Rust program that reads the driver file as a stream and parses it. The driver is expected to be initialized already, or else reading the driver file will not work. To start it, run 
-```
-cd user/ && cargo run
-```
-
-Here is a line of expected console output:
-```
-Temperature: 29.23C Pressure: 97290.80Pa Humidity: 26.35%
-```
-# bme280-driver
+Enjoy!

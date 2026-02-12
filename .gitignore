@@ -1,0 +1,11 @@
+driver/.bme280*
+driver/modules.*
+driver/Module.*
+driver/.modules*
+driver/.Module*
+driver/bme280.mod*
+driver/bme280.o
+driver/bme280.ko
+driver/.module-common.o
+driver/..module-common.o.cmd
+user/target
